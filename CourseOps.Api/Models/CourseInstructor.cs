@@ -1,22 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+﻿namespace CourseOps.Api.Models;
 
-namespace CourseOps.Api.Models;
-
-[Keyless]
-[Table("CourseInstructor")]
 public partial class CourseInstructor
 {
-    public int? CourseId { get; set; }
+    public int CourseId { get; set; }
 
-    public int? InstructorId { get; set; }
+    public int InstructorId { get; set; }
 
-    [ForeignKey("CourseId")]
-    public virtual Course? Course { get; set; }
+    public virtual Course Course { get; set; } = null!;
 
-    [ForeignKey("InstructorId")]
-    public virtual Instructor? Instructor { get; set; }
+    public virtual Instructor Instructor { get; set; } = null!;
 }

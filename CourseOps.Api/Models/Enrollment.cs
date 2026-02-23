@@ -1,37 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+﻿namespace CourseOps.Api.Models;
 
-namespace CourseOps.Api.Models;
-
-[Table("Enrollment")]
 public partial class Enrollment
 {
-    [Key]
     public int EnrollmentId { get; set; }
 
-    public int? StudentId { get; set; }
+    public int StudentId { get; set; }
 
-    public int? CourseId { get; set; }
+    public int CourseId { get; set; }
 
     public DateTime EnrolledAt { get; set; }
 
-    [Column("statusId")]
-    public int? StatusId { get; set; }
+    public int StatusId { get; set; }
 
     public byte[] RowVersion { get; set; } = null!;
 
-    [ForeignKey("CourseId")]
-    [InverseProperty("Enrollments")]
-    public virtual Course? Course { get; set; }
+    public virtual Course Course { get; set; } = null!;
 
-    [ForeignKey("StatusId")]
-    [InverseProperty("Enrollments")]
-    public virtual EnrollmentStatus? Status { get; set; }
+    public virtual EnrollmentStatus Status { get; set; } = null!;
 
-    [ForeignKey("StudentId")]
-    [InverseProperty("Enrollments")]
-    public virtual Student? Student { get; set; }
+    public virtual Student Student { get; set; } = null!;
 }

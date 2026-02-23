@@ -35,68 +35,7 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Course>(entity =>
-        {
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
-            entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.RowVersion)
-                .IsRowVersion()
-                .IsConcurrencyToken();
-        });
-
-        modelBuilder.Entity<CourseInstructor>(entity =>
-        {
-            entity.HasOne(d => d.Course).WithMany().HasConstraintName("FK_CourseInstructor_Course");
-
-            entity.HasOne(d => d.Instructor).WithMany().HasConstraintName("FK_CourseInstructor_Instructor");
-        });
-
-        modelBuilder.Entity<Enrollment>(entity =>
-        {
-            entity.HasKey(e => e.EnrollmentId).HasName("PK__Enrollme__7F68771BC3F30333");
-
-            entity.Property(e => e.RowVersion)
-                .IsRowVersion()
-                .IsConcurrencyToken();
-
-            entity.HasOne(d => d.Course).WithMany(p => p.Enrollments).HasConstraintName("FK_Course_Id");
-
-            entity.HasOne(d => d.Status).WithMany(p => p.Enrollments).HasConstraintName("FK_StatusId");
-
-            entity.HasOne(d => d.Student).WithMany(p => p.Enrollments).HasConstraintName("FK_Student_Id");
-        });
-
-        modelBuilder.Entity<EnrollmentStatus>(entity =>
-        {
-            entity.HasKey(e => e.StatusId).HasName("PK__Enrollme__C8EE2063A998AA40");
-        });
-
-        modelBuilder.Entity<Gender>(entity =>
-        {
-            entity.HasKey(e => e.GenderId).HasName("PK__Gender__4E24E9F794CF8B38");
-        });
-
-        modelBuilder.Entity<Instructor>(entity =>
-        {
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
-            entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.RowVarsion)
-                .IsRowVersion()
-                .IsConcurrencyToken();
-        });
-
-        modelBuilder.Entity<Student>(entity =>
-        {
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
-            entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.RowVersion)
-                .IsRowVersion()
-                .IsConcurrencyToken();
-
-            entity.HasOne(d => d.Gender).WithMany(p => p.Students).HasConstraintName("FK_Student_Gender");
-        });
-
-        OnModelCreatingPartial(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
