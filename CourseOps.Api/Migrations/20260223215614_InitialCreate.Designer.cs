@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourseOps.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260220170730_InitialCreate")]
+    [Migration("20260223215614_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -36,7 +36,7 @@ namespace CourseOps.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("(getutcdate())");
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -68,26 +68,28 @@ namespace CourseOps.Api.Migrations
 
                     b.HasKey("CourseId");
 
-                    b.HasIndex(new[] { "IsActive" }, "IX_Course_IsActive");
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_Course_IsActive");
 
-                    b.HasIndex(new[] { "StartDate" }, "IX_Course_StartDate");
+                    b.HasIndex("StartDate")
+                        .HasDatabaseName("IX_Course_StartDate");
 
-                    b.ToTable("Course");
+                    b.ToTable("Course", (string)null);
                 });
 
             modelBuilder.Entity("CourseOps.Api.Models.CourseInstructor", b =>
                 {
-                    b.Property<int?>("CourseId")
+                    b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("InstructorId")
+                    b.Property<int>("InstructorId")
                         .HasColumnType("int");
 
-                    b.HasIndex("CourseId");
+                    b.HasKey("CourseId", "InstructorId");
 
                     b.HasIndex("InstructorId");
 
-                    b.ToTable("CourseInstructor");
+                    b.ToTable("CourseInstructor", (string)null);
                 });
 
             modelBuilder.Entity("CourseOps.Api.Models.Enrollment", b =>
@@ -98,7 +100,7 @@ namespace CourseOps.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnrollmentId"));
 
-                    b.Property<int?>("CourseId")
+                    b.Property<int>("CourseId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EnrolledAt")
@@ -110,15 +112,14 @@ namespace CourseOps.Api.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<int?>("StatusId")
+                    b.Property<int>("StatusId")
                         .HasColumnType("int")
                         .HasColumnName("statusId");
 
-                    b.Property<int?>("StudentId")
+                    b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    b.HasKey("EnrollmentId")
-                        .HasName("PK__Enrollme__7F68771BC3F30333");
+                    b.HasKey("EnrollmentId");
 
                     b.HasIndex("CourseId");
 
@@ -126,7 +127,7 @@ namespace CourseOps.Api.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollment");
+                    b.ToTable("Enrollment", (string)null);
                 });
 
             modelBuilder.Entity("CourseOps.Api.Models.EnrollmentStatus", b =>
@@ -138,17 +139,16 @@ namespace CourseOps.Api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StatusId"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("StatusId")
-                        .HasName("PK__Enrollme__C8EE2063A998AA40");
+                    b.HasKey("StatusId");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__Enrollme__737584F653038364")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
-                    b.ToTable("EnrollmentStatus");
+                    b.ToTable("EnrollmentStatus", (string)null);
                 });
 
             modelBuilder.Entity("CourseOps.Api.Models.Gender", b =>
@@ -164,13 +164,12 @@ namespace CourseOps.Api.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("GenderId")
-                        .HasName("PK__Gender__4E24E9F794CF8B38");
+                    b.HasKey("GenderId");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__Gender__737584F6BC29FD6B")
+                    b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Gender");
+                    b.ToTable("Gender", (string)null);
                 });
 
             modelBuilder.Entity("CourseOps.Api.Models.Instructor", b =>
@@ -184,7 +183,7 @@ namespace CourseOps.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("(getutcdate())");
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -199,7 +198,7 @@ namespace CourseOps.Api.Migrations
                     b.Property<DateOnly>("HireDate")
                         .HasColumnType("date");
 
-                    b.Property<bool?>("IsActive")
+                    b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
@@ -209,7 +208,7 @@ namespace CourseOps.Api.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<byte[]>("RowVarsion")
+                    b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
@@ -217,12 +216,14 @@ namespace CourseOps.Api.Migrations
 
                     b.HasKey("InstructorId");
 
-                    b.HasIndex(new[] { "IsActive" }, "IX_Instructor_IsActive");
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("UQ_Instructor_Email");
 
-                    b.HasIndex(new[] { "Email" }, "UQ_Instructor_Email")
-                        .IsUnique();
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_Instructor_IsActive");
 
-                    b.ToTable("Instructor");
+                    b.ToTable("Instructor", (string)null);
                 });
 
             modelBuilder.Entity("CourseOps.Api.Models.Student", b =>
@@ -236,7 +237,7 @@ namespace CourseOps.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("(getutcdate())");
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
@@ -272,12 +273,12 @@ namespace CourseOps.Api.Migrations
 
                     b.HasKey("StudentId");
 
-                    b.HasIndex("GenderId");
-
-                    b.HasIndex(new[] { "Email" }, "UQ__Student__A9D10534BB0BBA7E")
+                    b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Student");
+                    b.HasIndex("GenderId");
+
+                    b.ToTable("Student", (string)null);
                 });
 
             modelBuilder.Entity("CourseOps.Api.Models.CourseInstructor", b =>
@@ -285,12 +286,14 @@ namespace CourseOps.Api.Migrations
                     b.HasOne("CourseOps.Api.Models.Course", "Course")
                         .WithMany()
                         .HasForeignKey("CourseId")
-                        .HasConstraintName("FK_CourseInstructor_Course");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("CourseOps.Api.Models.Instructor", "Instructor")
                         .WithMany()
                         .HasForeignKey("InstructorId")
-                        .HasConstraintName("FK_CourseInstructor_Instructor");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Course");
 
@@ -302,17 +305,20 @@ namespace CourseOps.Api.Migrations
                     b.HasOne("CourseOps.Api.Models.Course", "Course")
                         .WithMany("Enrollments")
                         .HasForeignKey("CourseId")
-                        .HasConstraintName("FK_Course_Id");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("CourseOps.Api.Models.EnrollmentStatus", "Status")
                         .WithMany("Enrollments")
                         .HasForeignKey("StatusId")
-                        .HasConstraintName("FK_StatusId");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("CourseOps.Api.Models.Student", "Student")
                         .WithMany("Enrollments")
                         .HasForeignKey("StudentId")
-                        .HasConstraintName("FK_Student_Id");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Course");
 
@@ -326,7 +332,7 @@ namespace CourseOps.Api.Migrations
                     b.HasOne("CourseOps.Api.Models.Gender", "Gender")
                         .WithMany("Students")
                         .HasForeignKey("GenderId")
-                        .HasConstraintName("FK_Student_Gender");
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Gender");
                 });

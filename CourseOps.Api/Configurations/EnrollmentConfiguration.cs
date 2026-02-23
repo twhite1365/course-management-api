@@ -22,7 +22,8 @@ public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
                .IsRequired();
 
         builder.Property(e => e.StatusId)
-               .IsRequired();
+               .IsRequired()
+               .HasColumnName("statusId");
 
         builder.Property(e => e.EnrolledAt)
                .IsRequired();
@@ -32,10 +33,6 @@ public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
                .IsRowVersion()
                .IsConcurrencyToken()
                .IsRequired();
-
-        // If DB column is literally "statusId"
-        builder.Property(e => e.StatusId)
-               .HasColumnName("statusId");
 
         // Relationships
 

@@ -31,7 +31,9 @@ namespace CourseOps.Api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseId"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -40,7 +42,9 @@ namespace CourseOps.Api.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -139,8 +143,7 @@ namespace CourseOps.Api.Migrations
                     b.HasKey("StatusId");
 
                     b.HasIndex("Name")
-                        .IsUnique()
-                        .HasDatabaseName("UX_EnrollmentStatus_Name");
+                        .IsUnique();
 
                     b.ToTable("EnrollmentStatus", (string)null);
                 });
@@ -161,8 +164,7 @@ namespace CourseOps.Api.Migrations
                     b.HasKey("GenderId");
 
                     b.HasIndex("Name")
-                        .IsUnique()
-                        .HasDatabaseName("UX_Gender_Name");
+                        .IsUnique();
 
                     b.ToTable("Gender", (string)null);
                 });
@@ -176,7 +178,9 @@ namespace CourseOps.Api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InstructorId"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -191,8 +195,10 @@ namespace CourseOps.Api.Migrations
                     b.Property<DateOnly>("HireDate")
                         .HasColumnType("date");
 
-                    b.Property<bool?>("IsActive")
-                        .HasColumnType("bit");
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -226,7 +232,9 @@ namespace CourseOps.Api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
@@ -245,7 +253,9 @@ namespace CourseOps.Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -261,8 +271,7 @@ namespace CourseOps.Api.Migrations
                     b.HasKey("StudentId");
 
                     b.HasIndex("Email")
-                        .IsUnique()
-                        .HasDatabaseName("UX_Student_Email");
+                        .IsUnique();
 
                     b.HasIndex("GenderId");
 

@@ -23,13 +23,13 @@ public class CourseInstructorConfiguration : IEntityTypeConfiguration<CourseInst
 
         // Relationship to Course
         builder.HasOne(ci => ci.Course)
-               .WithMany()
+               .WithMany(c => c.CourseInstructors)
                .HasForeignKey(ci => ci.CourseId)
                .OnDelete(DeleteBehavior.Restrict);
 
         // Relationship to Instructor
         builder.HasOne(ci => ci.Instructor)
-               .WithMany()
+               .WithMany(i => i.CourseInstructors)
                .HasForeignKey(ci => ci.InstructorId)
                .OnDelete(DeleteBehavior.Restrict);
     }

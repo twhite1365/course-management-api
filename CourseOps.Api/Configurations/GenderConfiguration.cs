@@ -21,8 +21,7 @@ public class GenderConfiguration : IEntityTypeConfiguration<Gender>
 
         // Unique Index on Name
         builder.HasIndex(g => g.Name)
-               .IsUnique()
-               .HasDatabaseName("UX_Gender_Name");
+               .IsUnique();
 
         // Relationship (Gender -> Students)
         builder.HasMany(g => g.Students)

@@ -26,10 +26,12 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
                .IsRequired();
 
         builder.Property(c => c.IsActive)
-               .IsRequired();
+               .IsRequired()
+               .HasDefaultValue(true);
 
         builder.Property(c => c.CreatedAt)
-               .IsRequired();
+               .IsRequired()
+               .HasDefaultValueSql("GETUTCDATE()");
 
         builder.Property(c => c.UpdatedAt)
                .IsRequired(false);

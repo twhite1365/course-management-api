@@ -12,9 +12,10 @@ public partial class Instructor
 
     public DateOnly HireDate { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
     public byte[] RowVersion { get; set; } = null!;
+    public virtual ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
 }

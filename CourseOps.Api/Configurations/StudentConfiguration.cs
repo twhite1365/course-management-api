@@ -31,10 +31,12 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
                .IsRequired();
 
         builder.Property(s => s.CreatedAt)
-               .IsRequired();
+               .IsRequired()
+               .HasDefaultValueSql("GETUTCDATE()");
 
         builder.Property(s => s.IsActive)
-               .IsRequired();
+               .IsRequired()
+               .HasDefaultValue(true);
 
         // Concurrency Token
         builder.Property(s => s.RowVersion)
@@ -43,8 +45,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
 
         // Unique Email Index
         builder.HasIndex(s => s.Email)
-               .IsUnique()
-               .HasDatabaseName("UX_Student_Email");
+               .IsUnique();
 
         // Relationships
 

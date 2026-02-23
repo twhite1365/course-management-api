@@ -31,10 +31,12 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
                .IsRequired();
 
         builder.Property(i => i.IsActive)
-               .IsRequired(false);
+               .IsRequired()
+               .HasDefaultValue(true);
 
         builder.Property(i => i.CreatedAt)
-               .IsRequired();
+               .IsRequired()
+               .HasDefaultValueSql("GETUTCDATE()");
 
         // Concurrency Token
         builder.Property(i => i.RowVersion)

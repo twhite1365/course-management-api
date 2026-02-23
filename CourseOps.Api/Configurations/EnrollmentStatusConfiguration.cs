@@ -21,8 +21,7 @@ public class EnrollmentStatusConfiguration : IEntityTypeConfiguration<Enrollment
 
         // Unique Index on Name
         builder.HasIndex(es => es.Name)
-               .IsUnique()
-               .HasDatabaseName("UX_EnrollmentStatus_Name");
+               .IsUnique();
 
         // Relationship (EnrollmentStatus -> Enrollment)
         builder.HasMany(es => es.Enrollments)
