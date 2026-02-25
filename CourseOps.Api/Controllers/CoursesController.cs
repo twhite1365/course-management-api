@@ -22,7 +22,7 @@ namespace CourseOps.Api.Controllers
             if (pageNumber < 1)
                 return BadRequest("pageNumber must be greater than 0");
             if (pageSize < 1 || pageSize > 100)
-                return BadRequest($"pageSize must be between 1 and 100");            
+                return BadRequest($"pageSize must be between 1 and 100");
 
             var result = new PaginatedResult<CourseDto>();
 
@@ -43,9 +43,30 @@ namespace CourseOps.Api.Controllers
                     StartDate = c.StartDate,
                     EndDate = c.EndDate
                 })
-                .ToListAsync();           
+                .ToListAsync();
 
             return Ok(result);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<CourseDto>> GetCourseById(int id)
+        {
+            var course = await _context.Courses
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.CourseId == id);
+
+            if (course == null)
+                return NotFound();
+
+            var dto = new CourseDto
+            {
+                CourseId = course.CourseId,
+                Name = course.Name,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate
+            };
+
+            return Ok(dto);
         }
 
     }
