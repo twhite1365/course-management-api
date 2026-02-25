@@ -3,6 +3,7 @@ using CourseOps.Api.DTOs.Courses;
 using CourseOps.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace CourseOps.Api.Controllers
 {
@@ -11,13 +12,13 @@ namespace CourseOps.Api.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public CoursesController( ApplicationDbContext context)
+        public CoursesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult< PaginatedResult<CourseDto>>> GetCourses(int pageNumber, int pageSize, bool isActive)
+        public async Task<ActionResult<PaginatedResult<CourseDto>>> GetCourses(int pageNumber, int pageSize, bool isActive)
         {
             if (pageNumber < 1)
                 return BadRequest("pageNumber must be greater than 0");
@@ -68,6 +69,36 @@ namespace CourseOps.Api.Controllers
 
             return Ok(dto);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<CourseDto>> CreateCourse(CreateCourseRequest request)
+        {
+            if (request.StartDate >= request.EndDate)
+                return BadRequest("EndDate must be greater than StartDate." );
+
+            var course = new Course
+            {
+                Name = request.Name,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Courses.Add(course);
+            await _context.SaveChangesAsync();
+
+            var dto = new CourseDto
+            {
+                CourseId = course.CourseId,
+                Name = course.Name,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate
+            };
+
+            return CreatedAtAction( nameof(GetCourseById), new { id = dto.CourseId } ,dto );
+        }
+
 
     }
 }
