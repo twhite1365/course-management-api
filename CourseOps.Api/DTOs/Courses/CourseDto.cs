@@ -1,4 +1,4 @@
-﻿namespace CourseOps.Api.DTOs
+﻿namespace CourseOps.Api.DTOs.Courses
 {
     public class CourseDto
     {
