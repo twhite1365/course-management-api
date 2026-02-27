@@ -20,6 +20,7 @@ namespace CourseOps.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<PaginatedResult<CourseDto>>> GetCourses(int pageNumber, int pageSize, bool isActive)
         {
+            throw new Exception("Something went wrong internally!");
             if (pageNumber < 1)
                 return BadRequest("pageNumber must be greater than 0");
             if (pageSize < 1 || pageSize > 100)
