@@ -99,6 +99,63 @@ namespace CourseOps.Api.Controllers
             return CreatedAtAction( nameof(GetCourseById), new { id = dto.CourseId } ,dto );
         }
 
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> UpdateCourse( int id, UpdateCourseRequest request)
+        {
+            if (request.StartDate >= request.EndDate)
+                return BadRequest("EndDate must be greater than StartDate.");
 
+            var course = await _context.Courses
+                .SingleOrDefaultAsync(c => c.CourseId == id);
+            
+            if (course == null)
+                return NotFound();
+
+            course.Name = request.Name;
+            course.StartDate = request.StartDate;
+            course.EndDate = request.EndDate;
+
+            _context.Entry(course)
+                .Property(c => c.RowVersion)
+                .OriginalValue = request.RowVersion;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch( DbUpdateConcurrencyException)
+            {
+                return Conflict("The record was modified by another user.");
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteCourse(int id, [FromQuery] byte[] rowVersion)
+        {
+            var course = await _context.Courses
+                .SingleOrDefaultAsync(c => c.CourseId == id);
+
+            if (course == null)
+                return NotFound();
+
+            course.IsActive = false;
+
+            _context.Entry(course)
+                .Property(c => c.RowVersion)
+                .OriginalValue = rowVersion;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict("The record was modified by another user.");
+            }
+
+            return NoContent();
+        }
     }
 }
