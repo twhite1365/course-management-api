@@ -19,6 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ICoursesRepository, CoursesRepository>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
