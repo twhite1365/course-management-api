@@ -1,6 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-using CourseOps.Api.Models;
 using CourseOps.Api.Middleware;
+using CourseOps.Api.Models;
+using CourseOps.Api.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,8 @@ builder.Services.AddControllers()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<ICoursesRepository, CoursesRepository>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 

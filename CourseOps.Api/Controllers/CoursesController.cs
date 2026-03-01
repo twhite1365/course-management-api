@@ -1,9 +1,9 @@
 ﻿using CourseOps.Api.DTOs.Common;
 using CourseOps.Api.DTOs.Courses;
 using CourseOps.Api.Models;
+using CourseOps.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace CourseOps.Api.Controllers
 {
@@ -11,41 +11,23 @@ namespace CourseOps.Api.Controllers
     [ApiController]
     public class CoursesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public CoursesController(ApplicationDbContext context)
+        private readonly ApplicationDbContext _context; 
+        private readonly ICoursesRepository _repository;
+        public CoursesController(ICoursesRepository repository, ApplicationDbContext context)
         {
+            _repository = repository;
             _context = context;
         }
 
         [HttpGet]
         public async Task<ActionResult<PaginatedResult<CourseDto>>> GetCourses(int pageNumber, int pageSize, bool isActive)
         {
-            throw new Exception("Something went wrong internally!");
             if (pageNumber < 1)
                 return BadRequest("pageNumber must be greater than 0");
             if (pageSize < 1 || pageSize > 100)
                 return BadRequest($"pageSize must be between 1 and 100");
 
-            var result = new PaginatedResult<CourseDto>();
-
-            var query = _context.Courses
-                .AsNoTracking()
-                .Where(c => c.IsActive == isActive);
-
-            result.TotalCount = await query.CountAsync();
-
-            result.Items = await query
-                .OrderBy(c => c.CourseId)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(c => new CourseDto
-                {
-                    CourseId = c.CourseId,
-                    Name = c.Name,
-                    StartDate = c.StartDate,
-                    EndDate = c.EndDate
-                })
-                .ToListAsync();
+            var result = await _repository.GetCourses(pageNumber, pageSize, isActive);
 
             return Ok(result);
         }
